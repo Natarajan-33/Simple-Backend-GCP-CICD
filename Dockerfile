@@ -1,18 +1,15 @@
-# Use official Python image
 FROM python:3.10-slim
 
-# Set work directory
 WORKDIR /app
 
-# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the code
 COPY . .
 
-# Expose port
-EXPOSE 8000
+# Use PORT=8080 for Cloud Run compatibility
+ENV PORT 8080
 
-# Start server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8080
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

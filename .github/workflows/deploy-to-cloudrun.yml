@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy:
+    name: Build and Deploy to Cloud Run
     runs-on: ubuntu-latest
 
     steps:
@@ -17,15 +18,18 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-      - name: Configure gcloud
+      - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           install_components: 'beta'
 
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
       - name: Build and push Docker image to Docker Hub
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-app:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
 
