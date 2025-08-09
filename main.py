@@ -144,3 +144,5 @@ async def get_quote() -> Dict[str, str]:
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"} 
+
+    
